@@ -4,48 +4,47 @@ import java.io.Serializable;
 
 public class AccountChangedEvent implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	//事件类型
-    private String type;
-    //事件所对应的操作
-    private String operation;
-    //事件对应的领域模型
-    private AccountMessage accountMessage;
+  private static final long serialVersionUID = 1L;
 
-    
-    public AccountChangedEvent() {
-		super();
-	}
+  // 事件类型
+  private String type;
+  // 事件所对应的操作
+  private String operation;
+  // 事件对应的领域模型
+  private AccountMessage accountMessage;
 
-	public AccountChangedEvent(String type, String operation, AccountMessage accountMessage) {
-        super();
-        this.type   = type;
-        this.operation = operation;
-        this.accountMessage = accountMessage;
-    }
+  public AccountChangedEvent() {
+    super();
+  }
 
-    public String getType() {
-        return type;
-    }
+  public AccountChangedEvent(String type, String operation, AccountMessage accountMessage) {
+    super();
+    this.type = type;
+    this.operation = operation;
+    this.accountMessage = accountMessage;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public String getType() {
+    return type;
+  }
 
-	public String getOperation() {
-		return operation;
-	}
+  public void setType(String type) {
+    this.type = type;
+  }
 
-	public void setOperation(String operation) {
-		this.operation = operation;
-	}
+  public String getOperation() {
+    return operation;
+  }
 
-	public AccountMessage getAccountMessage() {
-		return accountMessage;
-	}
+  public void setOperation(String operation) {
+    this.operation = operation;
+  }
 
-	public void setAccountMessage(AccountMessage accountMessage) {
-		this.accountMessage = accountMessage;
-	}
+  public AccountMessage getAccountMessage() {
+    return accountMessage;
+  }
+
+  public void setAccountMessage(AccountMessage accountMessage) {
+    this.accountMessage = accountMessage;
+  }
 }

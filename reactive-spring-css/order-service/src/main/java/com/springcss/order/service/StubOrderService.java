@@ -1,17 +1,17 @@
-//package com.springcss.order.service;
+// package com.springcss.order.service;
 //
-//import java.util.Map;
-//import java.util.concurrent.ConcurrentHashMap;
+// import java.util.Map;
+// import java.util.concurrent.ConcurrentHashMap;
 //
-//import org.springframework.stereotype.Service;
+// import org.springframework.stereotype.Service;
 //
-//import com.springcss.order.domain.Order;
+// import com.springcss.order.domain.Order;
 //
-//import reactor.core.publisher.Flux;
-//import reactor.core.publisher.Mono;
+// import reactor.core.publisher.Flux;
+// import reactor.core.publisher.Mono;
 //
-//@Service
-//public class StubOrderService {
+// @Service
+// public class StubOrderService {
 //
 //	private final Map<String, Order> orders = new ConcurrentHashMap<>();
 //
@@ -36,4 +36,4 @@
 //	public Mono<Order> deleteOrder(final String id) {
 //		return Mono.justOrEmpty(this.orders.remove(id));
 //	}
-//}
+// }

@@ -11,12 +11,12 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @Configuration
 public class OrderRouter {
 
-	@Bean
-	public RouterFunction<ServerResponse> routeOrder(OrderHandler orderHandler) {
-		
-		return RouterFunctions.route(
-				RequestPredicates.GET("/orders/{orderNumber}")
-					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
-					orderHandler::getOrderByOrderNumber);		
-	}
+  @Bean
+  public RouterFunction<ServerResponse> routeOrder(OrderHandler orderHandler) {
+
+    return RouterFunctions.route(
+        RequestPredicates.GET("/orders/{orderNumber}")
+            .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)),
+        orderHandler::getOrderByOrderNumber);
+  }
 }

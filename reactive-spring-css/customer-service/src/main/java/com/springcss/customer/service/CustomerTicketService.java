@@ -1,89 +1,87 @@
 package com.springcss.customer.service;
 
-import java.util.Date;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.springcss.customer.client.AccountMapper;
 import com.springcss.customer.client.OrderMapper;
 import com.springcss.customer.client.ReactiveAccountClient;
 import com.springcss.customer.client.ReactiveOrderClient;
 import com.springcss.customer.domain.CustomerTicket;
 import com.springcss.customer.repository.CustomerTicketRepository;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class CustomerTicketService {
 
-	@Autowired
-	private CustomerTicketRepository customerTicketRepository;
+  @Autowired private CustomerTicketRepository customerTicketRepository;
 
-	@Autowired
-	private ReactiveOrderClient orderClient;
-	
-	@Autowired
-	private ReactiveAccountClient accountClient;
+  @Autowired private ReactiveOrderClient orderClient;
 
-	private static final Logger logger = LoggerFactory.getLogger(CustomerTicketService.class);
+  @Autowired private ReactiveAccountClient accountClient;
 
-	private Mono<OrderMapper> getRemoteOrderByOrderNumber(String orderNumber) {
+  private static final Logger logger = LoggerFactory.getLogger(CustomerTicketService.class);
 
-		return orderClient.getOrderByOrderNumber(orderNumber);
-	}
-	
-	private Mono<AccountMapper> getRemoteAccountByAccountId(String accountId) {
+  private Mono<OrderMapper> getRemoteOrderByOrderNumber(String orderNumber) {
 
-		return accountClient.findAccountById(accountId);
-		
-//		return accountClient.getAccountFromRemote(accountId);
-	}
+    return orderClient.getOrderByOrderNumber(orderNumber);
+  }
 
-	public Mono<CustomerTicket> generateCustomerTicket(String accountId, String orderNumber) {
+  private Mono<AccountMapper> getRemoteAccountByAccountId(String accountId) {
 
-		logger.debug("Generate customer ticket record with account: {} and order: {}", accountId, orderNumber);
+    return accountClient.findAccountById(accountId);
 
-		CustomerTicket customerTicket = new CustomerTicket();
-		customerTicket.setId("C_" + UUID.randomUUID().toString());
+    //		return accountClient.getAccountFromRemote(accountId);
+  }
 
-		// 从远程account-service获取Account信息
-		Mono<AccountMapper> accountMapper = getRemoteAccountByAccountId(accountId);
-		
-		// 从远程order-service中获取Order信息
-		Mono<OrderMapper> orderMapper = getRemoteOrderByOrderNumber(orderNumber);
-		
-		Mono<CustomerTicket> monoCustomerTicket = 
-				Mono.zip(accountMapper, orderMapper).flatMap(tuple -> {
-			AccountMapper account = tuple.getT1();
-			OrderMapper order = tuple.getT2();
-			
-			if(account == null || order == null) {
-				return Mono.just(customerTicket);
-			}
-			
-			customerTicket.setAccountId(account.getId());
-			customerTicket.setOrderNumber(order.getOrderNumber());
-			customerTicket.setCreateTime(new Date());
-			customerTicket.setDescription("TestCustomerTicket");
-			
-			return Mono.just(customerTicket);
-		});
-		
-		return monoCustomerTicket.flatMap(customerTicketRepository::save);
-	}
+  public Mono<CustomerTicket> generateCustomerTicket(String accountId, String orderNumber) {
 
-	public Flux<CustomerTicket> getCustomerTickets() {
+    logger.debug(
+        "Generate customer ticket record with account: {} and order: {}", accountId, orderNumber);
 
-		return customerTicketRepository.findAll();
-	}
+    CustomerTicket customerTicket = new CustomerTicket();
+    customerTicket.setId("C_" + UUID.randomUUID().toString());
 
-	public Mono<CustomerTicket> getCustomerTicketById(String id) {
-		
-		return customerTicketRepository.findById(id);
-	}
+    // 从远程account-service获取Account信息
+    Mono<AccountMapper> accountMapper = getRemoteAccountByAccountId(accountId);
+
+    // 从远程order-service中获取Order信息
+    Mono<OrderMapper> orderMapper = getRemoteOrderByOrderNumber(orderNumber);
+
+    Mono<CustomerTicket> monoCustomerTicket =
+        Mono.zip(accountMapper, orderMapper)
+            .flatMap(
+                tuple -> {
+                  AccountMapper account = tuple.getT1();
+                  OrderMapper order = tuple.getT2();
+
+                  if (account == null || order == null) {
+                    return Mono.just(customerTicket);
+                  }
+
+                  customerTicket.setAccountId(account.getId());
+                  customerTicket.setOrderNumber(order.getOrderNumber());
+                  customerTicket.setCreateTime(new Date());
+                  customerTicket.setDescription("TestCustomerTicket");
+
+                  return Mono.just(customerTicket);
+                });
+
+    return monoCustomerTicket.flatMap(customerTicketRepository::save);
+  }
+
+  public Flux<CustomerTicket> getCustomerTickets() {
+
+    return customerTicketRepository.findAll();
+  }
+
+  public Mono<CustomerTicket> getCustomerTicketById(String id) {
+
+    return customerTicketRepository.findById(id);
+  }
 }
